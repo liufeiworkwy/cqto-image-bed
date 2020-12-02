@@ -27,6 +27,7 @@ public class BaseController {
     private IGiteeService giteeService;
 
 
+
     @RequestMapping("/")
     public String index(Model model
             , @RequestParam(value = "sha" , defaultValue = "") String sha
