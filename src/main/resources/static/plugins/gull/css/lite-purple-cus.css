@@ -1,0 +1,103 @@
+/*********************************scrollbar******************************/
+::-webkit-scrollbar-track{background-color:#F5F5F5;}::-webkit-scrollbar{width:6px;background-color:#F5F5F5;}::-webkit-scrollbar-thumb{background-color:#999;border-radius:5px;}
+/*********************************scrollbar******************************/
+
+/*********************************paginate******************************/
+.dropdown-menu>li>a{display:block;padding:3px 20px;clear:both;font-weight:400;line-height:30px;white-space:nowrap;}.dropdown-menu>.active>a{color:#FFFFFF;background-color:#663399;background-image:none;}.pull-left{float:left;}.pull-right{float:right;}.pull-right.pagination{line-height:34px;}.pagination li{margin-left:3px;border:1px solid #dddddd;border-radius:3px;width:30px;text-align:center;cursor:pointer;}.pagination .active{background-color:#663399;border:1px solid #663399;}.pagination .active a{color:#ffffff;}
+/*********************************paginate******************************/
+
+
+
+
+
+.main-content-wrap{
+    background-color: #f9f9f9 !important;
+}
+.nav-tabs{
+    width: 100%;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    padding-left: 40px;
+    box-shadow: 0 1px 15px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.04);
+
+}
+
+.tab-content{
+    background-color: #f3f3f4;
+}
+.nav-tabs, .nav-item , .nav-link{
+    line-height: 10px;
+    padding-left:0px;
+}
+
+.nav-link.active{
+    background-color: #663399 !important;
+    color: #FFFFFF !important;
+}
+
+.card.card-outline{
+    border-top: 3px solid #663399;
+}
+.card-title {
+    margin-bottom: 0rem;
+    font-size: 1.1rem;
+}
+.card-body {
+    flex: 1 1 auto;
+    padding: 0.8rem;
+}
+.hide{
+    display: none;
+}
+.show{
+    display: inline;
+}
+.table th,.table td{
+    height: 40px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table td{
+    padding: 0px;
+}
+.tab-content{
+    height: calc(100vh - 150px);;
+    overflow-y: scroll;
+}
+
+body .layer-ext-moon .layui-layer-btn .layui-layer-btn0 {
+    background: #663399;
+}
+
+input[type="checkbox" i] {
+    background-color: #663399 !important;
+    border: 1px solid #663399 !important;
+}
+
+.card-title{
+    background-color: #FFFFFF !important;
+    vertical-align: middle;
+}
+
+
+.required:before{
+    content: '*';
+    color: red;
+}
+.form-control-error {
+    border: 1px solid #FF0000;
+}
+
+
+
+@media (max-width: 576px) {
+    .tab-content{
+        height: calc(100vh - 100px);;
+        overflow-y: scroll;
+    }
+
+}
+
+
+
