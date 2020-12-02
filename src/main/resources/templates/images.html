@@ -31,7 +31,7 @@
             .item{
                 box-sizing: border-box;
                 break-inside: avoid;
-                padding: 10px;
+                padding: 5px;
             }
             .item-content{
                 display: flex;
@@ -62,7 +62,7 @@
 <div class=" container">
     <div class="item" >
         <div class="item-content ">
-            <img class="" width="100%">
+            <img class="" width="100%" src="/images/load.gif">
         </div>
     </div>
 </div>
@@ -70,7 +70,11 @@
 
 
 </body>
-<script>
+<script  th:inline="javascript">
+
+    var category = [[${category}]];
+    var pageNumber = 1;
+
     $(function () {
         document.addEventListener('scroll',function(){
             $.each($(".container .item-content img ") , function (index , object) {
@@ -78,22 +82,75 @@
             })
         })
 
-        $(document).on("click" , ".item-content .category" , function () {
-            var categoryValue = $(this).attr("data-category-value");
-            window.location.href = "/images?category="+categoryValue;
+
+        document.addEventListener('scroll',function(){
+            $.each($(".container .item-content img ")  , function (index , object) {
+                var elementFlag = elementInView($(object));
+                if(elementFlag){
+                    $(object).attr("src" , $(object).attr("data-org-src"));
+                }
+            })
+
+
         })
-        getCategorys();
+
+        document.addEventListener('scroll',function(){
+            var elementFlag = elementInView($(".page-iniate").last());
+            if(elementFlag){
+                pageNumber = pageNumber + 1;
+                getCategoryImages(category , pageNumber);
+            }
+        })
+        getCategoryImages(category , pageNumber);
+
+        //scrollToElement()
     })
-    var dirHtml = "<div class=\"item-content \"> <span class='category' data-category-value='{categoryValue}' >{categoryKey}</span> </div>"
-    function getCategorys() {
-        httpClient.post("/api/postimg/jsonCategorys" ,{}, function (data) {
+
+
+    function elementInView(element) {
+        const rect = $(element)[0].getBoundingClientRect()
+        const yInView = rect.top < window.innerHeight && rect.bottom > 0
+        const xInView = rect.left < window.innerWidth && rect.right > 0
+
+        return (yInView && xInView);
+    }
+
+
+
+
+
+    function scrollToElement() {
+        $('html,body').animate({scrollTop:1}, 800);
+    }
+
+
+
+
+
+
+
+    var dirHtml = "<div class=\"item\" ><div class=\"item-content \"> <img  width=\"100%\" data-org-src='{dataOrgSrc}' src='/images/load.gif' /> </div></div>"
+    function getCategoryImages( category ,pageNumber) {
+
+        var params = {
+            category: category,
+            page:pageNumber
+        };
+
+        httpClient.post("/api/postimg/jsons" ,params, function (data) {
             if (data.code == 200){
                 var tmpDirHtml = "";
                 $.each(data.data , function (index , object) {
-                    tmpDirHtml += dirHtml.replace("{categoryValue}" , object.value)
-                        .replace("{categoryKey}" , object.key);
+                    tmpDirHtml += dirHtml.replace("{imageSrc}" , object[4])
+                    .replace("{dataOrgSrc}" , object[4].replace(object[0] , object[1]))
                 })
-                $(".item").empty().append(tmpDirHtml);
+                tmpDirHtml += "<div class='page-iniate'></div>"
+                $(".container").empty().append(tmpDirHtml);
+                console.log(pageNumber)
+                if (pageNumber == 1){
+                    console.log("scroll")
+                    scrollToElement();
+                }
             }
         })
     }

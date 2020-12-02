@@ -12,10 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -53,14 +51,27 @@ public class BaseController {
         Map<String , Object> returnMap = new HashMap<>();
 
         try{
-            List<Map<String, String>> jTQZ4rj = PostImgUtil.getImagesByCategory("jTQZ4rj");
-            returnMap.put("files" , jTQZ4rj);
+            //List<Map<String, String>> jTQZ4rj = PostImgUtil.getImagesByCategory("jTQZ4rj" ,null);
+            //returnMap.put("files" , jTQZ4rj);
             model.addAllAttributes(returnMap);
         }catch (Exception e){
             e.printStackTrace();
         }
         return returnPage("waterfall-flow");
     }
+
+    @RequestMapping("/images")
+    public String images(HttpServletRequest request , Model model){
+        Map<String , Object> paramsMap = new HashMap<>();
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()){
+            String paraName=(String)parameterNames.nextElement();
+            paramsMap.put(paraName , request.getParameter(paraName));
+        }
+        model.addAllAttributes(paramsMap);
+        return "images";
+    }
+
 
 
 
