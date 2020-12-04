@@ -17,12 +17,16 @@
     <link th:href="@{'/plugins/webuploader/webuploader.css'}" rel="stylesheet" />
     <link th:href="@{'/plugins/webuploader/examples/style.css'}" rel="stylesheet" />
 
+
+    <script async src="//picloli.com/sdk/pup.js" data-url="https://picloli.com/upload"></script>
     <style>
 
     </style>
+
 </head>
 
 <body class="text-left">
+
 <div class="app-admin-wrap layout-horizontal-bar">
     <div class="main-header">
         <div class="logo"><img src="http://liufeiworkwy.gitee.io/gitee-oss/header.png" alt="" /></div>
@@ -107,6 +111,7 @@
                             </div>
                             <div class="table-header-navigate">
                                 <div class="btn-operate pull-left">
+                                    <button id="pup-preview" class="chevereto-pup-button chevereto-pup-button--palette-default" value=""><span class="chevereto-pup-button-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M76.7 87.5c12.8 0 23.3-13.3 23.3-29.4 0-13.6-5.2-25.7-15.4-27.5 0 0-3.5-0.7-5.6 1.7 0 0 0.6 9.4-2.9 12.6 0 0 8.7-32.4-23.7-32.4 -29.3 0-22.5 34.5-22.5 34.5 -5-6.4-0.6-19.6-0.6-19.6 -2.5-2.6-6.1-2.5-6.1-2.5C10.9 25 0 39.1 0 54.6c0 15.5 9.3 32.7 29.3 32.7 2 0 6.4 0 11.7 0V68.5h-13l22-22 22 22H59v18.8C68.6 87.4 76.7 87.5 76.7 87.5z"></path></svg></span><span class="%tClass">上传图片</span></button>
                                     <button class="btn btn-raised-secondary m-1" type="button" onclick="javascript:history.go(-1)"><i class="fa fa-chevron-left"></i></button>
                                     <button class="btn btn-raised-secondary m-1 btn-refresh" type="button" ><i class="fa fa-sync"></i></button>
                                     <button class="btn btn-raised-secondary m-1" type="button" onclick="window.history.forward()"><i class="fa fa-chevron-right"></i></button>

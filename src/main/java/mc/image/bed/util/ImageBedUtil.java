@@ -23,7 +23,7 @@ public class ImageBedUtil {
         params.put("scene" , "aeMessageCenterV2ImageRule");
 
 
-        HttpResponseEntity httpResponseEntity = HttpClient.doPost(uploadUrl, params);
+        HttpResponseEntity httpResponseEntity = HttpClient.doPost(uploadUrl, params , null);
         System.out.println(JSON.toJSONString(httpResponseEntity));
     }
     public static byte[] File2byte(File tradeFile){

@@ -97,6 +97,52 @@ public class BaseController {
 
 
 
+
+
+
+
+
+    @RequestMapping("/che")
+    public String chevereto(Model model
+            , @RequestParam(value = "sha" , defaultValue = "") String sha
+            , @RequestParam(value = "accordions" , defaultValue = "") String accordions
+    ){
+        Map<String , Object> returnMap = new HashMap<>();
+
+        try{
+            //List<Map<String, String>> jTQZ4rj = PostImgUtil.getImagesByCategory("jTQZ4rj" ,null);
+            //returnMap.put("files" , jTQZ4rj);
+            model.addAllAttributes(returnMap);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "chevereto-index";
+    }
+
+
+    @RequestMapping("/che/images")
+    public String chevereto(HttpServletRequest  request , Model model){
+        Map<String , Object> returnMap = new HashMap<>();
+
+        try{
+            Enumeration<String> parameterNames = request.getParameterNames();
+            while (parameterNames.hasMoreElements()){
+                String paraName=(String)parameterNames.nextElement();
+                returnMap.put(paraName , request.getParameter(paraName));
+            }
+            model.addAllAttributes(returnMap);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "chevereto-images";
+    }
+
+
+
+
+
+
+
     public String returnPage(String pagePath){
         return pagePath;
     }

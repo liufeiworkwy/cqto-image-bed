@@ -64,7 +64,7 @@ public class GiteeOssUtil {
             params.put("client_secret" , (clientSecret));
             params.put("grant_type" , ("password"));
             params.put("scope" , ("user_info projects gists"));
-            httpResponseEntity = HttpClient.doPost(authAddr, params);
+            httpResponseEntity = HttpClient.doPost(authAddr, params , null);
         }catch (Exception e) {
             e.printStackTrace();
         }

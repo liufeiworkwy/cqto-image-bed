@@ -117,9 +117,40 @@ public class PostImgUtil {
 
 
 
+
+
+
     public static void main(String[] args) {
 
+        Map<String , String> params = new HashMap<>();
 
+
+        HttpResponseEntity httpResponseEntity = HttpClient.doGet("https://picloli.com/album/jindo.LS6L", null);
+
+        Document parse = Jsoup.parse(httpResponseEntity.getContent());
+
+        Elements elements = parse.getElementsByTag("script").eq(9);
+
+
+        String authTokenString = "";
+        String authToken = "";
+        for (Element element : elements){
+            String[] split = element.data().split(";");
+            for (String str : split){
+                if (str.contains("PF.obj.config.auth_token")){
+                    authTokenString = str.trim();
+                    break;
+                }
+            }
+        }
+        if (StringUtils.isNotBlank(authTokenString)){
+            String[] split = authTokenString.split("=");
+            authToken = split[1].trim();
+            authToken = authToken.substring(1 , authToken.length() -1);
+        }
+
+        System.out.println(authTokenString);
+        System.out.println(authToken);
 
     }
 
