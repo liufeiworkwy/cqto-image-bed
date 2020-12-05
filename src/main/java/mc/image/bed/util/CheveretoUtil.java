@@ -17,7 +17,7 @@ import java.util.*;
 @Slf4j
 public class CheveretoUtil {
 
-    static String globalDoname = "https://picloli.com"; //img.wenhairu.com
+    static String globalDoname = "https://img.wenhairu.com"; //img.wenhairu.com/ picloli.com /dzimg.cn
 
 
     static String globalAuthToken = "";
@@ -93,6 +93,11 @@ public class CheveretoUtil {
     }
 
     public static List<Map<String , String>> getImagesPageNumber(String category , Integer paheNumber){
+
+        if (globalSeek == null || globalAuthToken == null){
+            getImagesPage(category);
+        }
+
         List<Map<String , String>> mapList = new ArrayList<>();
         Map<String , String> params = new HashMap<>();
         params.put("action","list");
@@ -113,16 +118,25 @@ public class CheveretoUtil {
         headers.put("origin" , "https://picloli.com");
         headers.put("referer" , "https://picloli.com/album/jindo.LS6L");
         HttpResponseEntity httpResponseEntity = HttpClientCheUtil.doPostHttps(globalDoname+"/json", params , headers);
+        log.info("===> "+httpResponseEntity.getContent());
 
         if (httpResponseEntity != null && StringUtils.isNotBlank(httpResponseEntity.getContent())){
-            Document document = Jsoup.parse(httpResponseEntity.getContent());
-            log.info("===> "+document);
-            mapList = setPageData(document);
+
+            Map map = JSON.parseObject(httpResponseEntity.getContent(), Map.class);
+            if (map != null){
+                Object html = map.get("html");
+                if (html != null){
+                    Document document = Jsoup.parse(String.valueOf(html));
+                    mapList = setPageData(document);
+                }
+            }
+
         }
         return mapList;
     }
 
     public static List<Map<String , String>> setPageData(Document document){
+        long l = System.currentTimeMillis();
         List<Map<String , String>> mapList = new ArrayList<>();
         Map<String , String> tmpMap = null;
         Elements elements = document.select(".list-item");
@@ -137,6 +151,7 @@ public class CheveretoUtil {
             tmpMap.put("imageName" , element.text());
             mapList.add(tmpMap);
         }
+        log.info(" ====== > 解析并封装数据耗时:{} 毫秒" , (System.currentTimeMillis() - l));
         return mapList;
     }
 

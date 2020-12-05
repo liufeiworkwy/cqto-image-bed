@@ -92,7 +92,6 @@
     <div class="horizontal-bar-wrap"></div>
 
     <div class="container">
-        <i class="fa fa-2x fa-times"></i>
         <div class="items-dorker">
             <div class="items" id="items"></div>
         </div>
@@ -145,18 +144,45 @@
 
         $(document).on("click" , ".item-content img" , function () {
             //window.open();
-            loading = $.loading();
+            //loading = $.loading();
+             var imgSrc = $(this).attr("src");
+
+            console.log('click image')
+            if (imgSrc.indexOf("images/load.gif")>=0 ){
+                cqto.error("图片加载中,请稍后在预览!");
+                return;
+            }
+
+            var loadSuccessFlag = $(this).attr("data-load-success");
+            if (!loadSuccessFlag){
+                cqto.error("图片加载中,请稍后在预览!");
+                return;
+            }
+
+
             var img = new Image()
-            img.src = $(this).attr("data-org-src");
+            img.src = imgSrc;
+
             var imageWidth;
             var imageHeight;
+
+            var tmpImagePreHtml = imagePreHtml
+                .replace("{fixTop}" , document.body.scrollTop)
+                .replace("{imageUrl}" , imgSrc)
+            //.replace("{imageWidth}" , imageWidth)
+            //.replace("{imageHeight}",imageHeight)
+            $(document.body).append(tmpImagePreHtml);
+
             if(img.complete){
+                console.log(" ====> 缓存")
                 imageWidth = img.width;
                 imageHeight = img.height;
                 console.log('image - width:'+img.width+',height:'+img.height)
                 imagePreview(imageWidth , imageHeight , img.src);
 
             }else{
+                console.log(" ====> load")
+
                 // 加载完成执行
                 img.onload = function(){
                     // 打印
@@ -181,10 +207,7 @@
                 }
             })
 
-            var $image = $(".image-pre img")[0];
-            if ($image != undefined){
-                imagePreview($image.width , $image.height , $image.src);
-            }
+            scrollImagePreview();
         })
         //
         $(".btn-load-data").hover(function () {
@@ -198,11 +221,14 @@
 
 
 
+        window.onresize = function(){
+            //imagePreviewOnresize();
+        }
+
 
 
         // 加载下页数据
         $(".btn-load-data").click(function () {
-            loading = $.loading();
             ajaxImagePage();
         })
         initImagePage();
@@ -230,7 +256,7 @@
         $('html,body').animate({scrollTop:height+"px"}, 800);
     }
 
-    var dirHtml = "<div class=\"item\" ><div class=\"item-content \"> <img  width=\"100%\" data-org-src='{imageSrcOrg}' data-thumb-src='{imageSrcThumb}' src='/images/load.gif' /> </div></div>"
+    var dirHtml = "<div class=\"item\" ><div class=\"item-content \"> <img data-load-success='false' onload='imageOnLoad(this)' data-org-src='{imageSrcOrg}' data-thumb-src='{imageSrcThumb}' src='/images/load.gif' /> </div></div>"
     function getCategoryImages( category ,pageNumber , func) {
         var params = {
             category: category,
@@ -248,12 +274,13 @@
     function initImagePage() {
         httpClient.post("/api/che/imagePage" ,{category: category}, function (data) {
 
-            var tmpImageHtml = "";
+            var tmpImageHtml = "<div class='items'>";
             $.each(data.data , function (index , object) {
                 tmpImageHtml += dirHtml.replace("{imageSrcOrg}" , object.imageSrcOrg)
                                 .replace("{imageSrcThumb}" , object.imageSrcThumb)
             })
-            $(".items").append(tmpImageHtml);
+            tmpImageHtml += "</div";
+            $(".items-dorker").append(tmpImageHtml);
             //$(".items").weimg();
             $.unloading(loading);
             scrollToElement();
@@ -262,24 +289,34 @@
 
     function ajaxImagePage() {
         var params = {
-            category: category,
+            category: category.split(".")[1],
             page: pageNumber
         };
+        loading = $.loading();
         httpClient.post("/api/che/imagePageNumber" , params , function (data) {
 
-            var tmpImageHtml = "";
+            var tmpImageHtml = "<div class='items'>";
             $.each(data.data , function (index , object) {
                 tmpImageHtml += dirHtml.replace("{imageSrcOrg}" , object.imageSrcOrg)
                     .replace("{imageSrcThumb}" , object.imageSrcThumb)
             })
-            $(".items").append(tmpImageHtml);
+            tmpImageHtml += "</div";
+
+            $(".items-dorker").append(tmpImageHtml);
             scrollToElement($(".items-dorker .items").last())
             //$(".items").weimg();
             $.unloading(loading);
         })
     }
 
+    function scrollImagePreview() {
+        var $imagePre = $(".image-pre");
+        if ($imagePre){
+            $imagePre.css("top",document.body.scrollTop);
+        }
+    }
     function imagePreview(imageWidth , imageHeight , imageUrl) {
+
         var xs = imageWidth / imageHeight;
         console.log("xs = "+xs)
         var seeHeight = document.body.clientHeight
@@ -293,12 +330,55 @@
             imageHeight = imageWidth / xs;
         }
         console.log("xs -2  = "+(imageWidth / imageHeight))
-        var tmpImagePreHtml = imagePreHtml.replace("{imageWidth}" , imageWidth)
-            .replace("{fixTop}" , document.body.scrollTop)
-            .replace("{imageUrl}" , imageUrl)
-            .replace("{imageHeight}",imageHeight)
-        $(document.body).append(tmpImagePreHtml);
+        $(".image-pre img").attr("width",imageWidth).attr("height", imageHeight);
+        // var tmpImagePreHtml = imagePreHtml
+        //     .replace("{fixTop}" , document.body.scrollTop)
+        //     .replace("{imageUrl}" , imageUrl)
+        //     //.replace("{imageWidth}" , imageWidth)
+        //     //.replace("{imageHeight}",imageHeight)
+        // $(document.body).append(tmpImagePreHtml);
         $.unloading(loading);
+    }
+
+    function imagePreviewOnresize() {
+        var $image = $(".image-pre img");
+
+        var imageWidth = $image.attr("width");
+        var imageHeight = $image.attr("height");
+        var xs = imageWidth / imageHeight;
+        console.log("xs = "+xs)
+        var seeHeight = document.body.clientHeight
+        var seeWidth = document.body.clientWidth
+        if (imageHeight > seeHeight){
+            imageHeight = seeHeight;
+            imageWidth = xs * imageHeight;
+        }
+        if (imageWidth > seeWidth){
+            imageWidth = seeWidth;
+            imageHeight = imageWidth / xs;
+        }
+        console.log("xs -2  = "+(imageWidth / imageHeight))
+        $(".image-pre img").attr("width",imageWidth).attr("height", imageHeight);
+
+    }
+
+    function imageOnLoad(object) {
+
+
+        var image = $(object)[0];
+        if(image.complete){
+            $(object).attr("data-load-success" , true);
+            $(object).attr("data-width" , image.width);
+            $(object).attr("data-height" , image.height);
+
+        }else{
+            // 加载完成执行
+            image.onload = function(){
+                $(object).attr("data-load-success" , true);
+                $(object).attr("data-width" , image.width);
+                $(object).attr("data-height" , image.height);
+            }
+        }
     }
 </script>
 </html>

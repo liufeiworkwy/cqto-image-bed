@@ -134,4 +134,21 @@ body {background-color: #f3f3f4;}
 }
 
 
+@media (max-width: 576px) {
+    .waterfall,.items{
+        column-count: 2;
+        column-gap: 0;
+    }
+}
+@media (max-width: 768px) {
+    .waterfall,.items{
+        column-count: 2;
+        column-gap: 0;
+    }
+}
+@media (min-width: 1440px){
+    .container {
+        max-width: 1440px !important;
+    }
+}
 
